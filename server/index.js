@@ -14,7 +14,7 @@ connectDB();
 const allowedOrigins = [
     'http://localhost:5173',
     'https://mern-auth-system-neih.onrender.com',
-    'https://mern-auth-system-6f83397q0-franklin-ochiengs-projects.vercel.app'
+    'https://mern-auth-system-gamma.vercel.app'
 ];
 
 // CORS middleware
