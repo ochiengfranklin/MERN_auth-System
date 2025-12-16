@@ -1,27 +1,29 @@
 import jwt from 'jsonwebtoken';
 
-const userAuth = async (req, res, next) => {
-    const { token } = req.cookies;
-
-    if (!token) {
-        return res.json({ success: false, message: 'Login not Authorized!' });
-    }
-
+const userAuth = (req, res, next) => {
     try {
-        const tokenDecode = jwt.verify(token, process.env.JWT_SECRET);
+        const token = req.cookies?.token;
 
-        if (tokenDecode.id) {
-            //  store user id here (GET requests do NOT use req.body)
-            req.userId = tokenDecode.id;
-        } else {
-            return res.json({ success: false, message: 'Not Authorized. Please login again' });
+        if (!token) {
+            return res
+                .status(401)
+                .json({ success: false, message: 'Login not Authorized!' });
         }
 
-        //  middleware continues here(sendVerifyOtp next)
-        next();
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+        if (!decoded || !decoded.id) {
+            return res
+                .status(401)
+                .json({ success: false, message: 'Not Authorized. Please login again' });
+        }
+
+        req.userId = decoded.id;
+        next();
     } catch (error) {
-        res.json({ success: false, message: error.message });
+        return res
+            .status(401)
+            .json({ success: false, message: 'Invalid or expired token' });
     }
 };
 
