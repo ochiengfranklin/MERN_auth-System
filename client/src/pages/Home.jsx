@@ -1,17 +1,17 @@
-import React from 'react'
-import Navbar from '../components/Navbar'
-import Header from '../components/Header'
-
-
+import React from 'react';
+import Navbar from '../components/Navbar';
+import Header from '../components/Header';
 
 const Home = () => {
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen 
-    bg-[url("/bg_img.jpg")] bg-cover bg-center'>
-       <Navbar/>
-      <Header/>
+    <div
+      className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: 'url("/bg_image.png")' }}
+    >
+      <Navbar />
+      <Header />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
