@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { createContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 
 export const AppContent = createContext();
 
@@ -10,37 +9,47 @@ export const AppContextProvider = ({ children }) => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
     const [isLoggedin, setIsLoggedin] = useState(false);
-    const [userData, setUserData] = useState(null); 
+    const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Get auth state
+    // ✅ Check auth state
     const getAuthState = async () => {
         try {
-            const { data } = await axios.get(backendUrl + '/api/auth/is-auth');
+            const { data } = await axios.get(
+                backendUrl + '/api/auth/is-auth',
+                { withCredentials: true }
+            );
+
             if (data.success) {
                 setIsLoggedin(true);
-                getUserData();
+                await getUserData();
             }
         } catch (error) {
-             
-            toast.error(error.response?.data?.message || "Something went wrong");
+            // ✅ THIS IS NORMAL — user is simply logged out
+            setIsLoggedin(false);
+            setUserData(null);
         } finally {
-        setLoading(false)
-    }
+            setLoading(false);
+        }
     };
-    
 
-    // Get user data
+    // ✅ Get user data
     const getUserData = async () => {
         try {
-            const { data } = await axios.get(backendUrl + '/api/user/data');
+            const { data } = await axios.get(
+                backendUrl + '/api/user/data',
+                { withCredentials: true }
+            );
+
             if (data.success) {
                 setUserData(data.userData);
             } else {
-                toast.error(data.message);
+                setIsLoggedin(false);
+                setUserData(null);
             }
         } catch (error) {
-            toast.error(error.response?.data?.message || "Something went wrong");
+            setIsLoggedin(false);
+            setUserData(null);
         }
     };
 
@@ -60,7 +69,7 @@ export const AppContextProvider = ({ children }) => {
 
     return (
         <AppContent.Provider value={value}>
-            {children}
+            {!loading && children}
         </AppContent.Provider>
     );
 };
